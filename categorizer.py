@@ -7,7 +7,12 @@ def scan_folder(root_path):
         for file_name in files:
             try:
                 full_path = os.path.join(current_path, file_name)
-                all_files.append(full_path)
+                extension = os.path.splitext(file_name)[1].lower()
+
+                all_files.append({
+                    "path": full_path,
+                    "extension": extension
+                })
             except Exception:
                 continue
 
@@ -16,12 +21,14 @@ def scan_folder(root_path):
 
 def save_to_file(file_list, output_filename):
     with open(output_filename, "w", encoding="utf-8") as f:
-        for file_path in file_list:
-            f.write(file_path + "\n")
+        for file in file_list:
+            f.write(f"{file['path']} | {file['extension']}\n")
 
 
 if __name__ == "__main__":
-    folder_to_scan = input("Enter folder path: ").strip()
+    print("📂 Scanning folder...")
+
+    folder_to_scan = r"C:\Users\Vardh\Documents"
 
     if not os.path.isdir(folder_to_scan):
         print("❌ Invalid folder path")
@@ -29,8 +36,8 @@ if __name__ == "__main__":
 
     files = scan_folder(folder_to_scan)
 
-    folder_name = os.path.basename(os.path.normpath(folder_to_scan))
-    output_file = f"{folder_name}_files.txt"
+    root_name = os.path.basename(os.path.normpath(folder_to_scan))
+    output_file = f"{root_name}_files.txt"
 
     save_to_file(files, output_file)
 
